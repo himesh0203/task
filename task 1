@@ -1,0 +1,114 @@
+import React, { useState } from "react";
+
+// Goal Type (UPDATED with icon)
+type Goal = {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+};
+
+const emojiList = ["📚", "💻", "🔥", "🚀", "🎯", "✅"];
+
+const GoalManager: React.FC = () => {
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [icon, setIcon] = useState("📚");
+
+  // Add Goal
+  const addGoal = () => {
+    if (!name) return;
+
+    const newGoal: Goal = {
+      id: Date.now().toString(),
+      name,
+      description,
+      icon,
+    };
+
+    setGoals([...goals, newGoal]);
+    setName("");
+    setDescription("");
+  };
+
+  // Update Icon
+  const updateIcon = (id: string, newIcon: string) => {
+    const updatedGoals = goals.map((goal) =>
+      goal.id === id ? { ...goal, icon: newIcon } : goal
+    );
+    setGoals(updatedGoals);
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Goal Manager</h2>
+
+      {/* Input Fields */}
+      <input
+        type="text"
+        placeholder="Goal Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <br /><br />
+
+      <input
+        type="text"
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <br /><br />
+
+      {/* Emoji Picker */}
+      <div>
+        <p>Select Icon:</p>
+        {emojiList.map((e) => (
+          <span
+            key={e}
+            style={{
+              fontSize: "24px",
+              margin: "5px",
+              cursor: "pointer",
+              border: icon === e ? "2px solid black" : "none",
+            }}
+            onClick={() => setIcon(e)}
+          >
+            {e}
+          </span>
+        ))}
+      </div>
+
+      <br />
+      <button onClick={addGoal}>Add Goal</button>
+
+      <hr />
+
+      {/* Display Goals */}
+      <ul>
+        {goals.map((goal) => (
+          <li key={goal.id}>
+            <span style={{ fontSize: "24px" }}>{goal.icon}</span>{" "}
+            <strong>{goal.name}</strong> - {goal.description}
+
+            {/* Change Icon */}
+            <div>
+              {emojiList.map((e) => (
+                <span
+                  key={e}
+                  style={{ cursor: "pointer", margin: "3px" }}
+                  onClick={() => updateIcon(goal.id, e)}
+                >
+                  {e}
+                </span>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default GoalManager;
